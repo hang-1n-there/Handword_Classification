@@ -27,3 +27,28 @@ class Block(nn.Module):
         
         return y
 
+class ImgClassifier(nn.Module):
+    def __init__(self, input_size, output_size, hidden_sizes=[500,400,300,200,100], use_batch_norm=True, dropout_p=.3):
+        
+        super().__init__()
+        # assert 조건, 메세지 | assert의 조건이 true가 아니면 error와 메세지를 반환
+        assert len(hidden_sizes) > 0, 'You need specify hidden layers'
+        
+        last_hidden_size = input_size
+        blocks=[]
+        
+        for hidden_size in hidden_sizes:
+            # last_hidden_size = Q(t), hidden_size = Q(t+1)
+            blocks+=[Block(last_hidden_size, hidden_size, use_batch_norm, dropout_p)]
+            last_hidden_size=hidden_size
+        
+        self.layers = nn.Sequential(
+            blocks,
+            nn.Linear(last_hidden_size, output_size),
+            nn.LogSoftmax(dim=-1),
+        )
+    def forward(self, x):
+        # |x| = (batch_size * input_size)
+        y = self.layers(x)
+        # |y| = (batch_size * output_size)
+        return y
