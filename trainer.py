@@ -75,7 +75,6 @@ class Trainer():
             
             print('Epoch : {:d}, Train : {:.4e}, Valid : {:.4e}, lowest_loss : {:.4e}'
                   .format(epoch_index+1, train_loss, valid_loss, lowest_loss))
-
+            
         # Restore to best_model
         self.model.state_dict(best_model)
-        
