@@ -29,7 +29,7 @@ class Trainer():
         
         for i, (x_i, y_i) in enumerate(zip(x,y)):
             y_hat_i = self.model(x_i)
-            loss_i = self.crit(y_hat_i, y_i).squeeze()
+            loss_i = self.crit(y_hat_i, y_i.squeeze())
           
             self.optimizer.zero_grad()
             loss_i.backward()
@@ -46,7 +46,7 @@ class Trainer():
     def _validate(self, x, y, config):
         self.model.eval()
         
-        with torch.no_grad:
+        with torch.no_grad():
             x, y = self._batchify(x, y, config.batch_size, random_split=False)
             total_loss = 0
             
@@ -59,7 +59,7 @@ class Trainer():
                 
                 total_loss += float(loss_i)
                 
-            total_loss = total_loss / len(x)
+            return total_loss / len(x)
     
     def train(self, train_data, valid_data, config):
         lowest_loss = np.inf
